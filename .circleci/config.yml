@@ -1,0 +1,12 @@
+version: 2.1
+
+orbs:
+  sam: circleci/aws-serverless@1.0.1
+
+workflows:
+  build:
+    jobs:
+      - sam/hello_world
+        name: build-package-hello_world
+        template: source/circleci-demo/template.yaml
+        s3-bucket: login-gov.lambda-functions.894947205914-us-west-2
