@@ -149,8 +149,9 @@ Resources:
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          # Should be another security group or VPC CIDR block 
-          CidrIp: 0.0.0.0/0
+          SourceSecurityGroupId: !Sub 
+              - '{{resolve:ssm:/${Environment}/network/securitygroup/idp/id:1}}'
+              - Environment: !Ref environment
 
   ApplicationLambdaArns:
     Type: AWS::SSM::Parameter
