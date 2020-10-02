@@ -168,7 +168,7 @@ Resources:
   ApplicationLambdaGitSha:
     Type: AWS::SSM::Parameter
     Properties:
-      Type: StringList
+      Type: String
       Name: !Sub 
         - /${Environment}/infra/lambda/gitsha
         - Environment: !Ref environment
