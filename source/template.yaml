@@ -136,6 +136,9 @@ Resources:
   HelloWorldSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      GroupName: !Sub 
+        - ${Environment}-HelloWorldFunction
+        - Environment: !Ref environment
       VpcId: !Sub
         - '{{resolve:ssm:/${Environment}/network/vpc/id:1}}'
         - Environment: !Ref environment
@@ -177,7 +180,9 @@ Resources:
   AWSRubySDKLayer:
     Type: "AWS::Serverless::LayerVersion"
     Properties:
-      LayerName: infra-ruby-sdk
+      LayerName: !Sub 
+        - ${Environment}-infra-ruby-sdk
+        - Environment: !Ref environment
       Description: AWS Ruby SDK
       ContentUri: aws-ruby-sdk
       CompatibleRuntimes:
@@ -189,7 +194,9 @@ Resources:
   AWSPythonSDKLayer:
     Type: "AWS::Serverless::LayerVersion"
     Properties:
-      LayerName: infra-python-sdk
+      LayerName: !Sub 
+        - ${Environment}-infra-python-sdk
+        - Environment: !Ref environment
       Description: AWS Python SDK
       ContentUri: aws-python-sdk
       CompatibleRuntimes:
