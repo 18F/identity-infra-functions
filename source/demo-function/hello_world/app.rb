@@ -32,7 +32,6 @@ def lambda_handler(event:, context:)
     logger.info(item)
     print "Name: #{item.key}"
   end
-  logger.info("End")
   return
 end
 
