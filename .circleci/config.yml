@@ -31,6 +31,7 @@ commands:
             #brew tap aws/tap
             #brew install aws-sam-cli
             python3 --version
+            pip3
             sam --version
 
   brew-install:
