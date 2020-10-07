@@ -28,10 +28,10 @@ commands:
           name: "Install SAM CLI"
           command: |
             PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
-            #brew tap aws/tap
-            #brew install aws-sam-cli
-            python3 --version
-            pip3 install aws-sam-cli
+            brew tap aws/tap
+            brew install aws-sam-cli
+            # hack to fix install issue
+            brew install aws-sam-cli
             sam --version
 
   brew-install:
