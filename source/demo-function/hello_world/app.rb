@@ -30,7 +30,7 @@ def lambda_handler(event:, context:)
 
   bucket.objects.limit(50).each do |item|
     logger.info(item)
-    print "Name: #{item.key}"
+    print "Foo: #{item.key}"
   end
   return
 end
