@@ -10,6 +10,8 @@ workflows:
     jobs:
       - build:
           context: login-sandbox
+      - prod-copy:
+          context: login-prod
 
 jobs:
   build:
@@ -19,6 +21,10 @@ jobs:
       - sam-cli-install
       - checkout
       - build-repo
+  prod-copy:
+    executor: ubuntu-2004
+    steps:
+      - copy-prod-s3
 
 commands:
   sam-cli-install:
@@ -96,3 +102,13 @@ commands:
             zip identity-infra-functions.zip gitsha.txt
             aws s3 cp identity-infra-functions.template.yaml s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
             aws s3 cp identity-infra-functions.zip s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
+
+  copy-prod-s3:
+    steps:
+      - run:
+          name: "Copy to Prod"
+          command: |
+            cd source 
+            aws s3 cp identity-infra-functions.template.yaml s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
+            aws s3 cp identity-infra-functions.zip s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
+          
