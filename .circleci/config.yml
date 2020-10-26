@@ -101,4 +101,5 @@ commands:
             zip identity-infra-functions.zip gitsha.txt
             aws s3 cp identity-infra-functions.template.yaml s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
             aws s3 cp identity-infra-functions.zip s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
-           
+            aws s3 cp identity-infra-functions.template.yaml s3://$prod_DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/ --profile prod
+            aws s3 cp identity-infra-functions.zip s3://$prod_DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/ --profile prod
