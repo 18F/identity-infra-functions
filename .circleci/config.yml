@@ -15,7 +15,6 @@ jobs:
   build:
     executor: ubuntu-2004
     steps:
-      - brew-install
       - aws-cli-configure
       - sam-cli-install
       - checkout
@@ -28,10 +27,7 @@ commands:
           name: "Install SAM CLI"
           command: |
             PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
-            brew tap aws/tap
-            brew install aws-sam-cli
-            # hack to fix install issue
-            brew install aws-sam-cli
+            pip3 install aws-sam-cli
             sam --version
 
   brew-install:
