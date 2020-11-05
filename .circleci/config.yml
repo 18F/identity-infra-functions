@@ -60,9 +60,6 @@ commands:
             aws configure set default.aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set default.aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
-            aws configure set profile.prod.aws_access_key_id $prod_AWS_ACCESS_KEY_ID
-            aws configure set profile.prod.aws_secret_access_key $prod_AWS_SECRET_ACCESS_KEY
-            aws configure set profile.prod.region $AWS_DEFAULT_REGION
 
   build-repo:
     steps:
@@ -101,5 +98,3 @@ commands:
             zip identity-infra-functions.zip gitsha.txt
             aws s3 cp identity-infra-functions.template.yaml s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
             aws s3 cp identity-infra-functions.zip s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
-            aws s3 cp identity-infra-functions.template.yaml s3://$prod_DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/ --profile prod
-            aws s3 cp identity-infra-functions.zip s3://$prod_DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/ --profile prod
