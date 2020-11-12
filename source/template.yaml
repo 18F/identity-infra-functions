@@ -51,6 +51,17 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref AWSRubySDKLayer
+      Policies:
+        - Statement:
+          - Sid: SNS
+            Effect: Allow
+            Action:
+            - sns:Publish
+            Resource: !Sub
+              - arn:${Partition}:sns:${Region}:${AccountId}:slack-otherevents
+              - Partition: !Ref AWS::Partition
+                AccountId: !Ref AWS::AccountId
+                Region: !Ref AWS::Region
       Tags:
         environment: !Ref environment
 

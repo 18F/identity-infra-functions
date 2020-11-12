@@ -2,9 +2,8 @@ require 'json'
 require 'aws-sdk-sns'
 require 'aws-sdk-xray'
 
-sns = Aws::SNS::Resource.new()
-
 def lambda_handler(event:, context:)
+    sns = Aws::SNS::Resource.new()
     topic = sns.topic('arn:aws:sns:us-west-2:894947205914:slack-otherevents')
     topic.publish({message: 'Testing please ignoe'})
     # TODO implement
