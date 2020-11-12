@@ -5,7 +5,7 @@ Parameters:
   environment:
     Type: String
     Description: Deployment environment
-    Default: "dev"
+    Default: "account"
 
 Metadata:
   AWS::ServerlessRepo::Application:
@@ -41,13 +41,14 @@ Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: demo-function/hello_world/
+      CodeUri: demo-function/
       Handler: app.lambda_handler
       MemorySize: 128
       AutoPublishAlias: !Ref environment
       Runtime: ruby2.7
       DeploymentPreference:
         Type: AllAtOnce
+      Tracing: Active
       Tags:
         environment: !Ref environment
 
