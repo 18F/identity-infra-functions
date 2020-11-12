@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "aws-sdk-xray"
 gem "aws-sdk-sns", "~>1"
+gem "aws-sdk-lambda", "~>1"
 gem "oj", platform: :mri
 gem "jrjackson", platform: :jruby
 gem "logger"
