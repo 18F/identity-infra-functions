@@ -1,9 +1,5 @@
 source "https://rubygems.org"
 
 gem "httparty"
-gem "aws-xray-sdk"
-gem "aws-sdk-sns", "~>1"
-gem "oj", platform: :mri
-gem "jrjackson", platform: :jruby
 
 ruby '~> 2.7.0'

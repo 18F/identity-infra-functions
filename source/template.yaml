@@ -49,22 +49,24 @@ Resources:
       DeploymentPreference:
         Type: AllAtOnce
       Tracing: Active
+      Layers:
+        - !Ref AWSRubySDKLayer
       Tags:
         environment: !Ref environment
 
-  # AWSRubySDKLayer:
-  #   Type: "AWS::Serverless::LayerVersion"
-  #   Properties:
-  #     LayerName: !Sub 
-  #       - ${Environment}-infra-ruby-sdk
-  #       - Environment: !Ref environment
-  #     Description: AWS Ruby SDK
-  #     ContentUri: aws-ruby-sdk
-  #     CompatibleRuntimes:
-  #       - ruby2.7
-  #     RetentionPolicy: Retain
-  #   Metadata:
-  #     BuildMethod: ruby2.7
+  AWSRubySDKLayer:
+    Type: "AWS::Serverless::LayerVersion"
+    Properties:
+      LayerName: !Sub 
+        - ${Environment}-infra-ruby-sdk
+        - Environment: !Ref environment
+      Description: AWS Ruby SDK
+      ContentUri: aws-ruby-sdk
+      CompatibleRuntimes:
+        - ruby2.7
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: ruby2.7
 
   # AWSPythonSDKLayer:
   #   Type: "AWS::Serverless::LayerVersion"
