@@ -62,6 +62,12 @@ Resources:
               - Partition: !Ref AWS::Partition
                 AccountId: !Ref AWS::AccountId
                 Region: !Ref AWS::Region
+        - Statement:
+          - Sid: Lambda
+            Effect: Allow
+            Action:
+            - lambda:GetAccountSettings
+            Resource: "*"
       Tags:
         environment: !Ref environment
 
