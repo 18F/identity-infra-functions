@@ -1,6 +1,6 @@
 require 'json'
 require 'aws-sdk-sns'
-require 'aws-xray-sdk-core'
+require 'aws-sdk-xray'
 
 sns = Aws::SNS::Resource.new()
 

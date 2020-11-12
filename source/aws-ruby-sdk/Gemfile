@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "aws-xray-sdk-core"
+gem "aws-sdk-xray"
 gem "aws-sdk-sns", "~>1"
 gem "oj", platform: :mri
 gem "jrjackson", platform: :jruby
