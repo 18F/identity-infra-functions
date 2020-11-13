@@ -1,3 +1,4 @@
 source "https://rubygems.org"
 
+gem "aws-xray-sdk"
 ruby '~> 2.7.0'
