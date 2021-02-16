@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - pip3 install --upgrade aws-sam-cli 
+
+  build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - GITSHA=$(cat gitsha.txt)
+      - echo $GITSHA
+      - |
+        sam deploy --template-file identity-infra-functions.template.yaml \
+          --stack-name $STACK_NAME \
+          --parameter-overrides gitsha=$GITSHA \
+          environment=$ENVIRONMENT \
+          --capabilities CAPABILITY_IAM \
+          --no-fail-on-empty-changeset
+  
