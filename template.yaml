@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+   SAM Template for identity-infra-functions
+
+Globals:
+  Function:
+    Timeout: 15
+
+Resources:
+  AutoScalingEventsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: autoscaling_events/
+      Handler: function.lambda_handler
+      Runtime: python3.8
+      Environment: 
+        Variables:
+          EVENTS_CHANNEL: 'prod,staging,int'
+      Policies:
+        - Statement:
+          - Sid: SSMParameter
+            Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource: 
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/account/${AWS::Region}/alert/sns/arn_slack_otherevents']]
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/account/${AWS::Region}/alert/sns/arn_slack_events']]
+        - Statement:
+          - Sid: SNSPublish
+            Effect: Allow
+            Action:
+              - sns:Publish
+            Resource:
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:slack-otherevents']]
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:slack-events']]
+            
+Outputs:
+  AutoScalingEventsFunction:
+    Description: "AutoScaling events function"
+    Value: !GetAtt AutoScalingEventsFunction.Arn
+  
