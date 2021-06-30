@@ -9,10 +9,10 @@ workflows:
   lambda-functions:
     jobs:
       - copy:
-          #filters:
-          #  branches:
-          #    only:
-          #      - main
+          filters:
+            branches:
+              only:
+                - main
           context:
             - login-sandbox
 
