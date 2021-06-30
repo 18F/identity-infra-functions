@@ -8,11 +8,11 @@ executors:
 workflows:
   lambda-functions:
     jobs:
-      - copy-to-s3:
-          filters:
-            branches:
-              only:
-                - main
+      - copy:
+          #filters:
+          #  branches:
+          #    only:
+          #      - main
           context:
             - login-sandbox
 
