@@ -8,12 +8,26 @@ Globals:
     Timeout: 15
 
 Resources:
+  InfraLayer:
+      Type: "AWS::Serverless::LayerVersion"
+      Properties:
+        LayerName: infra-layer
+        Description: identity-infra-functions layer
+        ContentUri: infra_layer
+        CompatibleRuntimes:
+          - python3.8
+        RetentionPolicy: Delete
+      Metadata:
+        BuildMethod: python3.8
+
   AutoScalingEventsFunction:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: autoscaling_events/
       Handler: function.lambda_handler
       Runtime: python3.8
+      Layers:
+        - !Ref InfraLayer
       Environment: 
         Variables:
           EVENTS_CHANNEL: 'prod,staging,int'
@@ -34,9 +48,42 @@ Resources:
             Resource:
               - !Join ["",[!Sub 'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:slack-otherevents']]
               - !Join ["",[!Sub 'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:slack-events']]
+
+  RDSCopySnapshotFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: rds_copy_snapshot/
+      Handler: function.lambda_handler
+      Runtime: python3.8
+      Layers:
+        - !Ref InfraLayer
+      Environment: 
+        Variables:
+          DESTINATION_REGION: 'us-east-1'
+      Policies:
+        - Statement:
+          - Sid: KMS
+            Effect: Allow
+            Action:
+              - kms:DescribeKey
+              - kms:CreateGrant
+            Resource: 
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:kms:us-east-1:${AWS::AccountId}:alias/idp-rds*']]
+        - Statement:
+          - Sid: RDS
+            Effect: Allow
+            Action:
+              - rds:AddTagsToResource
+              - rds:CopyDBSnapshot
+            Resource:
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:rds:${AWS::Region}:${AWS::AccountId}:snapshot:rds:login-*']]
+              - !Join ["",[!Sub 'arn:${AWS::Partition}:sns:us-east-1:${AWS::AccountId}:snapshot:login-*']]
             
 Outputs:
-  AutoScalingEventsFunction:
+  AutoScalingEventsFunctionArn:
     Description: "AutoScaling events function"
     Value: !GetAtt AutoScalingEventsFunction.Arn
   
+  RDSCopySnapshotFunctionArn:
+    Description: "RDS Copy Snapshot function"
+    Value: !GetAtt RDSCopySnaphotFunction.Arn

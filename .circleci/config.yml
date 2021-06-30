@@ -8,42 +8,22 @@ executors:
 workflows:
   lambda-functions:
     jobs:
-      - build-package:
-          filters:
-            branches:
-              ignore:
-                - main
-          context:
-            - login-sandbox
-            - login-prod
-      - build-package-copy:
+      - copy-to-s3:
           filters:
             branches:
               only:
                 - main
           context:
             - login-sandbox
-            - login-prod
 
 jobs:
-
-  build-package:
+  copy:
     executor: aws
     steps:
       - aws-cli-configure
       - checkout
-      - build-repo
+      - package-repo
       - copy-to-s3
-
-  build-package-copy:
-    executor: aws
-    steps:
-      - aws-cli-configure
-      - aws-cli-configure-prod
-      - checkout
-      - build-repo
-      - copy-to-s3
-      #- copy-to-s3-prod
 
 commands:
   aws-cli-configure:
@@ -55,56 +35,17 @@ commands:
             aws configure set default.aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
 
-  aws-cli-configure-prod:
+  package-repo:
     steps:
-      - run:
-          name: "Configure AWS CLI Prod"
-          command: |
-            aws configure set profile.prod.aws_access_key_id $prod_AWS_ACCESS_KEY_ID
-            aws configure set profile.prod.aws_secret_access_key $prod_AWS_SECRET_ACCESS_KEY
-            aws configure set profile.prod.region $AWS_DEFAULT_REGION
-
-  build-repo:
-    steps:
-      - run:
-          name: "Validate SAM template"
-          command: |
-            sam validate -t template.yaml --profile default --debug
-      - run:
-          name: "Build Functions"
-          command: |
-            sam build \
-              --template template.yaml
-      - run:
-          name: "Test Functions"
-          command: |
-            echo "Placeholder"
       - run:
           name: "Package Functions"
           command: |
-            sam package \
-              --profile default \
-              --debug \
-              --s3-bucket $DEPLOY_S3_BUCKET \
-              --s3-prefix circleci/identity-infra-functions/$CIRCLE_BRANCH/packages \
-              --output-template-file identity-infra-functions.template.yaml
             echo $CIRCLE_SHA1 > gitsha.txt
-            zip identity-infra-functions.zip identity-infra-functions.template.yaml
-            zip identity-infra-functions.zip buildspec.yml
-            zip identity-infra-functions.zip gitsha.txt
+            zip -r identity-infra-functions.zip .
 
   copy-to-s3:
     steps:
       - run:
           name: "Copy packages to S3"
           command: |
-            aws s3 cp identity-infra-functions.template.yaml s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
             aws s3 cp identity-infra-functions.zip s3://$DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/
-
-  copy-to-s3-prod:
-    steps:
-      - run:
-          name: "Copy packages to S3 prod"
-          command: |
-            aws s3 cp identity-infra-functions.template.yaml s3://$prod_DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/ --profile prod
-            aws s3 cp identity-infra-functions.zip s3://$prod_DEPLOY_S3_BUCKET/circleci/identity-infra-functions/$CIRCLE_BRANCH/ --profile prod
